@@ -1,0 +1,45 @@
+services:
+
+  postgres:
+    build:
+      context: ./Docker/postgres/
+      dockerfile: Dockerfile
+    env_file:
+      - ./env.env
+    expose:
+      - 5432
+    # ports:
+    #   - "5432:5432"
+    restart: always 
+
+  app:
+    build:
+      context: ./Docker/app
+      dockerfile: Dockerfile
+    ports: 
+      - 8000:8000
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    restart: always
+    env_file: ./env.env
+    volumes:
+      - ./Docker/app/:/var/www/app/
+
+  nginx:
+    build:
+      context: ./Docker/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./Docker/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./Docker/app/static/:/static/
+    ports:
+      - "80:80"
+    restart: always
+    links:
+      - postgres
+      - app
+    depends_on:
+      - postgres
+      - app
