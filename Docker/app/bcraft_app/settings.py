@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import environ
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'djoser',
+    'django_filters',
     'api',
     'statistics_app',
 ]
@@ -77,6 +79,24 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'bcraft_app.wsgi.application'
+
+
+# Rest Framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT', "Bearer",),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
+    'BLACKLIST_AFTER_ROTATION': False,
+}
 
 
 # Database
